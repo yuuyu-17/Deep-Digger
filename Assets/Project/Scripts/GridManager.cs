@@ -128,6 +128,16 @@ public class GridManager : MonoBehaviour
     // 外部からブロックを破壊するメソッド（今後実装）
     public void DestroyBlock(int x, int y, int z)
     {
-        // 破壊処理をここに書く
+        // グリッドのデータを「空」に設定
+        gridData[x, y, z].type = Block.BlockType.Empty;
+
+        // 対応するゲームオブジェクトを探して破壊
+        // これまでのステップでブロックに名前を付けているので、名前で検索できる
+        GameObject blockObject = GameObject.Find("Block_" + x + "_" + y + "_" + z);
+        if (blockObject != null)
+        {
+            Destroy(blockObject);
+        }
+
     }
 }
