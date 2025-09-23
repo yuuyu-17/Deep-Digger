@@ -22,6 +22,16 @@ public class Monster : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        // 衝突したオブジェクトのタグが"Player"か確認
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("ゲームオーバー！モンスターに捕まりました。");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
+        }
+    }
+
     // 外部から呼ばれて化け物を動かすメソッド
     public void MoveTowardsPlayer()
     {
