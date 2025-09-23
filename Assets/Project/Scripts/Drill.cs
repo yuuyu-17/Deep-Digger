@@ -21,6 +21,12 @@ public class Drill : MonoBehaviour
                 // ヒットしたオブジェクトのタグを取得
                 string hitTag = hit.collider.tag;
 
+                if (hitTag == "Gem")
+                {
+                    // 宝石を掘ったときにGameManagerに通知
+                    GameManager.instance.AddGem();
+                }
+
                 // タグによって処理を分岐
                 int scoreToAdd = 0;
                 switch (hitTag)
