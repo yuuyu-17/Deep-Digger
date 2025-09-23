@@ -4,6 +4,7 @@ public class Drill : MonoBehaviour
 {
    // Raycastの最大距離
     public float maxDrillDistance = 5f;
+
     public Monster monster;
 
     private void Update()
@@ -21,21 +22,28 @@ public class Drill : MonoBehaviour
                 string hitTag = hit.collider.tag;
 
                 // タグによって処理を分岐
+                int scoreToAdd = 0;
                 switch (hitTag)
                 {
                     case "Dirt":
                         Debug.Log("土のブロックを掘りました！");
+                        scoreToAdd = 0;
                         break;
                     case "Rock":
                         Debug.Log("岩のブロックを掘りました！");
+                        scoreToAdd = 0;
                         break;
                     case "Gem":
                         Debug.Log("宝石を掘り当てました！");
+                        scoreToAdd = 100;
                         break;
                     default:
                         Debug.Log("掘るべきブロックではありません。");
                         return;
                 }
+
+                // ScoreManagerのインスタンスを通じてスコアを加算
+                ScoreManager.instance.AddScore(scoreToAdd);
 
                 // どのブロックでも共通の破壊処理
                 Vector3Int gridPos = Vector3Int.RoundToInt(hit.collider.transform.position);
