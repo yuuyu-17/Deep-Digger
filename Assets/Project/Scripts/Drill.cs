@@ -4,6 +4,7 @@ public class Drill : MonoBehaviour
 {
    // Raycastの最大距離
     public float maxDrillDistance = 5f;
+    public Monster monster;
 
     private void Update()
     {
@@ -39,6 +40,12 @@ public class Drill : MonoBehaviour
                 // どのブロックでも共通の破壊処理
                 Vector3Int gridPos = Vector3Int.RoundToInt(hit.collider.transform.position);
                 GridManager.instance.DestroyBlock(gridPos.x, gridPos.y, gridPos.z);
+
+                // 掘った後に化け物を動かす
+                if (monster != null)
+                {
+                    monster.MoveTowardsPlayer();
+                }
             }
         }
     }
