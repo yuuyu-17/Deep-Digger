@@ -8,6 +8,7 @@ TagManager:
   - Rock
   - Dirt
   - Gem
+  - Monster
   layers:
   - Default
   - TransparentFX
