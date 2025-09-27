@@ -12,6 +12,9 @@ public class FlashlightManager : MonoBehaviour
     // バッテリー残量
     private float currentBatteryLife;
 
+    // スコアからバッテリーに変換するレート
+    public int scoreToBatteryRate = 100;
+
     // 懐中電灯のライトコンポーネント
     private Light flashlight;
 
@@ -41,13 +44,29 @@ public class FlashlightManager : MonoBehaviour
             flashlight.enabled = false;
         }
 
+        // バッテリーがゼロになったら
         if (currentBatteryLife <= 0)
-    {
-        currentBatteryLife = 0;
-        flashlight.enabled = false;
-        // バッテリーが切れたらゲームオーバーシーンへ
-        UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
-    }
+        {
+            // スコアが足りるか確認
+            if (ScoreManager.instance.GetCurrentScore() >= scoreToBatteryRate)
+            {
+                // スコアを消費
+                ScoreManager.instance.RemoveScore(scoreToBatteryRate);
+
+                // バッテリーを回復
+                currentBatteryLife = maxBatteryLife;
+                flashlight.enabled = true;
+
+                Debug.Log("バッテリーが切れました！スコアを消費して回復しました。");
+            }
+            else
+            {
+                // スコアがなければゲームオーバー
+                currentBatteryLife = 0;
+                flashlight.enabled = false;
+                UnityEngine.SceneManagement.SceneManager.LoadScene("GameOver");
+            }
+        }
 
         // UIを更新
         UpdateBatteryUI();

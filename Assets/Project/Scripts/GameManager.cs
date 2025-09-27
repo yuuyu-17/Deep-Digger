@@ -39,6 +39,6 @@ public class GameManager : MonoBehaviour
     private void LoadWinScene()
     {
         // 勝利画面のシーンに遷移
-        SceneManager.LoadScene("WinScene");
+        //SceneManager.LoadScene("WinScene");
     }
 }
