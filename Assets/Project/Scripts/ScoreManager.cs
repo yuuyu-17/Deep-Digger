@@ -40,4 +40,18 @@ public class ScoreManager : MonoBehaviour
             scoreText.text = "Score: " + score.ToString();
         }
     }
+
+    // スコアを減らすメソッド
+    public void RemoveScore(int amount)
+    {
+        score -= amount;
+        if (score < 0) score = 0; // スコアがマイナスにならないように
+        UpdateScoreUI();
+    }
+
+    // 現在のスコアを返すメソッド
+    public int GetCurrentScore()
+    {
+        return score;
+    }
 }
