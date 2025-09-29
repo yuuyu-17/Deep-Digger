@@ -3,18 +3,12 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    // スコアマネージャーのインスタンス
     public static ScoreManager instance;
-
-    // 現在のスコアを格納する変数
     private int score = 0;
+    public TextMeshProUGUI scoreText; // スコア表示UI
 
-    // UIにスコアを表示するためのテキストコンポーネント
-    public TextMeshProUGUI scoreText;
-
-    private void Awake()
+    void Awake()
     {
-        // シングルトンパターンの実装
         if (instance == null)
         {
             instance = this;
@@ -32,26 +26,34 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreUI();
     }
 
-    // スコアをUIに反映させるメソッド
-    private void UpdateScoreUI()
-    {
-        if (scoreText != null)
-        {
-            scoreText.text = "Score: " + score.ToString();
-        }
-    }
-
-    // スコアを減らすメソッド
-    public void RemoveScore(int amount)
-    {
-        score -= amount;
-        if (score < 0) score = 0; // スコアがマイナスにならないように
-        UpdateScoreUI();
-    }
-
     // 現在のスコアを返すメソッド
     public int GetCurrentScore()
     {
         return score;
+    }
+
+    // スコアを減らすメソッド (バッテリー回復などに使用)
+    public void RemoveScore(int amount)
+    {
+        Debug.Log($"[Score] {amount} スコアを消費しました。(現在の稼ぎ: {score} -> {score - amount})");
+        score -= amount;
+        if (score < 0) score = 0;
+        UpdateScoreUI();
+    }
+
+    public int EndShiftAndGetScore()
+    {
+        int scoreToClear = score;
+        score = 0;
+        UpdateScoreUI();
+        return scoreToClear;
+    }
+
+    private void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "稼ぎ: " + score.ToString();
+        }
     }
 }

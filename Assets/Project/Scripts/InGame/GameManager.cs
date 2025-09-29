@@ -1,17 +1,22 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    // プレイヤーが掘る必要のある宝石の数
-    public int gemsToCollect = 5;
+    [Header("シフト設定")]
+    public float shiftDuration = 300f; // 1シフトの時間（5分）
+    private float shiftTimer;
+    public TextMeshProUGUI timerText; // 労働時間UI
 
-    // 現在の宝石の数
-    private int collectedGems = 0;
+    [Header("費用設定")]
+    public int taxCost = 500;    // 納税額
+    public int foodCost = 200;   // 食費・生活費
+    private int totalShiftCost;   // 固定費の合計
 
-    private void Awake()
+    void Awake()
     {
         if (instance == null)
         {
@@ -23,22 +28,63 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddGem()
+    void Start()
     {
-        collectedGems++;
-        Debug.Log("Collected Gems: " + collectedGems + " / " + gemsToCollect);
+        shiftTimer = shiftDuration;
+        totalShiftCost = taxCost + foodCost;
+    }
 
-        if (collectedGems >= gemsToCollect)
+    void Update()
+    {
+        if (shiftTimer > 0)
         {
-            Debug.Log("ゲームクリア！");
-            // ここでゲームクリア処理を呼び出す
-            LoadWinScene();
+            shiftTimer -= Time.deltaTime;
+            UpdateTimerUI();
+        }
+        else
+        {
+            EndShift();
         }
     }
 
-    private void LoadWinScene()
+    void UpdateTimerUI()
     {
-        // 勝利画面のシーンに遷移
-        //SceneManager.LoadScene("WinScene");
+        if (timerText != null)
+        {
+            int minutes = Mathf.FloorToInt(shiftTimer / 60F);
+            int seconds = Mathf.FloorToInt(shiftTimer % 60F);
+            timerText.text = string.Format("労働時間: {0:00}:{1:00}", minutes, seconds);
+        }
+    }
+
+    void EndShift()
+    {
+        // 労働時間終了後の処理は一度だけ実行
+        if (shiftTimer == 0) return;
+        shiftTimer = 0;
+
+        Debug.Log("労働時間終了！清算準備へ。");
+
+        // スコアを取得し、ScoreManagerのスコアをリセット
+        int earnings = ScoreManager.instance.EndShiftAndGetScore();
+
+        // GameStateManagerに今回の稼ぎと固定費用を託す
+        if (GameStateManager.instance != null)
+        {
+            GameStateManager.instance.currentShiftEarnings = earnings;
+            GameStateManager.instance.totalShiftCost = totalShiftCost;
+        }
+
+        // リザルト画面へ遷移
+        SceneManager.LoadScene("ResultScene");
+    }
+
+    public void LoadWinScene()
+    {
+        // ゲームのクリア処理を実行
+        Debug.Log("ゲームクリア！WinSceneに遷移します。");
+        
+        // 現在のシーンを停止し、WinSceneへ移動
+        SceneManager.LoadScene("WinScene");
     }
 }
