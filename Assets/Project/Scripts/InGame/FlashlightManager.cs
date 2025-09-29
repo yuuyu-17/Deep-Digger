@@ -84,7 +84,7 @@ public class FlashlightManager : MonoBehaviour
         if (batteryText != null)
         {
             int percentage = Mathf.RoundToInt(currentBatteryLife * 100);
-            batteryText.text = "Battery: " + percentage.ToString() + "%";
+            batteryText.text = "電池: " + percentage.ToString() + "%";
         }
     }
 }
