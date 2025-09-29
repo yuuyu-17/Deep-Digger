@@ -21,10 +21,11 @@ public class Drill : MonoBehaviour
                 // ヒットしたオブジェクトのタグを取得
                 string hitTag = hit.collider.tag;
 
-                if (hitTag == "Gem")
+                if (hitTag == "CoreGem")
                 {
-                    // 宝石を掘ったときにGameManagerに通知
-                    GameManager.instance.AddGem();
+                    Debug.Log("ゲームクリア！コア・ジェムを見つけました。");
+                    GameManager.instance.LoadWinScene();
+                    return;
                 }
 
                 // タグによって処理を分岐
