@@ -7,14 +7,15 @@ public class GameStateManager : MonoBehaviour
 
     // プレイヤーの総資産（シーンをまたいで引き継がれる貯金）
     [Header("総資産")]
-    public int totalAssets = 0;
+    [SerializeField] private int totalAssets = 0;
+    public int TotalAssets => totalAssets;
 
     // 今シフトで稼いだスコア（リザルト画面への一時的な保存場所）
     [Header("今シフトの稼ぎ（一時保存）")]
     public int currentShiftEarnings = 0;
 
     // 今シフトの固定費用（GameManagerから受け取る）
-    [Header("今シフトの固定費用")]
+    [Header("今シフトの固定費用 (納税額)")]
     public int totalShiftCost = 0;
 
     void Awake()

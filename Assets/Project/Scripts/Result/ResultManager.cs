@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 
@@ -18,7 +19,7 @@ public class ResultManager : MonoBehaviour
 
     private bool gameOverFlag = false;
     private int shiftEarnings;
-    private int totalCost;
+    private int taxAmount;
 
     private void Start()
     {
@@ -26,6 +27,12 @@ public class ResultManager : MonoBehaviour
         {
             Debug.LogError("GameStateManagerが見つかりません。");
             SceneManager.LoadScene("GameOver");
+            return;
+        }
+
+        if (FamilyStatusManager.instance == null)
+        {
+            Debug.LogError("FamilyStatusManagerが見つかりません。");
             return;
         }
 
@@ -44,44 +51,46 @@ public class ResultManager : MonoBehaviour
 
         // GameStateManagerからデータ取得
         shiftEarnings = GameStateManager.instance.currentShiftEarnings;
-        totalCost = GameStateManager.instance.totalShiftCost;
+        taxAmount = GameStateManager.instance.totalShiftCost;
 
         CalculateAndDisplayResults();
     }
 
     private void CalculateAndDisplayResults()
     {
-        int netProfit = shiftEarnings - totalCost;
+        int netProfitAfterTax = shiftEarnings - taxAmount;
 
         // UI表示の更新
         earningsText.text = "採掘スコア: " + shiftEarnings.ToString();
-        costText.text = "固定費用 (納税/食費): -" + totalCost.ToString();
+        costText.text = "固定費用 (納税): -" + taxAmount.ToString();
 
         // 清算後の総資産を計算し、GameStateManagerを更新（総資産の引き継ぎ）
-        GameStateManager.instance.UpdateAssets(netProfit);
+        GameStateManager.instance.UpdateAssets(netProfitAfterTax);
 
-        profitText.text = "純利益: " + netProfit.ToString();
+        profitText.text = "清算後残額: " + netProfitAfterTax.ToString();
 
         // 総資産の最終値をUIに表示
         if (totalAssetsText != null)
         {
-            totalAssetsText.text = "現在の総資産: " + GameStateManager.instance.totalAssets.ToString();
+            totalAssetsText.text = "現在の総資産: " + GameStateManager.instance.TotalAssets.ToString();
         }
 
+        FamilyStatusManager.instance.ConsumeFood();
+
         // 追放判定とUIの表示制御
-        if (GameStateManager.instance.totalAssets < 0)
+        if (GameStateManager.instance.TotalAssets < 0)
         {
             gameOverFlag = true;
-            statusText.text = "【追放確定】\n総資産が尽きました。あなたは闇に飲み込まれます。";
+            statusText.text = "【追放確定】\n総資産が尽き、家族を維持できなくなりました。";
             if (continueButtonObject != null)
             {
                 continueButtonObject.SetActive(false);
             }
             Invoke("LoadGameOverScene", 5f);
         }
-        else if (netProfit < 0)
+        else if (netProfitAfterTax < 0)
         {
-            statusText.text = "【負債発生】\n貯金で補填されましたが、危険な状態です。";
+            statusText.text = "【負債発生】\n納税は貯金で補填されました。食料を購入できますが危険です。";
             if (continueButtonObject != null)
             {
                 continueButtonObject.SetActive(true);
@@ -89,7 +98,7 @@ public class ResultManager : MonoBehaviour
         }
         else
         {
-            statusText.text = "【生活継続】\n利益が出ました。家族は守られました。";
+            statusText.text = "【生活継続】\n納税を済ませました。次のシフトに備えて食料を購入してください。";
             if (continueButtonObject != null)
             {
                 continueButtonObject.SetActive(true);
