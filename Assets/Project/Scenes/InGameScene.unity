@@ -391,6 +391,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 145753512}
   m_CullTransparentMesh: 1
+--- !u!1 &457661870 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1773623360729482, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
+  m_PrefabInstance: {fileID: 820666523}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &457661878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457661870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6302dcde502034d938fd680f3dee9249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &457661879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457661870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56447c0b37d9543ecba5cd08dd903ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridManager: {fileID: 1625668235}
+  renderDistance: 40
+  updateInterval: 0.1
 --- !u!1 &769245484
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,7 +511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 23
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -487,7 +519,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 23
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4207293392497186, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -536,7 +568,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1773623360729482, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 457661878}
+    - targetCorrespondingSourceObject: {fileID: 1773623360729482, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 457661879}
   m_SourcePrefab: {fileID: 100100000, guid: 11aaea5348574644a9eb4f4504fcce3f, type: 3}
 --- !u!1 &893407770
 GameObject:
@@ -992,13 +1030,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b732a568f0164e498dd41e8a2360552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 50
-  height: 50
-  depth: 50
+  noiseScale: 0.1
+  noiseThreshold: 0.5
+  startYLevel: -5
+  safeZoneRadius: 2
+  width: 40
+  height: 40
+  depth: 40
   dirtPrefab: {fileID: 7529567615649144053, guid: b5e3ff201d0414160aa230cf309b86c9, type: 3}
   rockPrefab: {fileID: 3789084485011033179, guid: f31682ced70a64e19a4b2b29059d69b2, type: 3}
   gemPrefab: {fileID: 5709598356867486685, guid: 0b7e8bfccd4bc43d1b900b742dd613e9, type: 3}
-  initialGenerateRadius: 6
 --- !u!4 &1625668236
 Transform:
   m_ObjectHideFlags: 0
@@ -1026,7 +1067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 867269059a577404693570923d09ccda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shiftDuration: 30
+  shiftDuration: 300
   timerText: {fileID: 38058833}
   taxCost: 50
   foodCost: 50
@@ -1257,15 +1298,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5725416364424737734, guid: e86b56eb18273432da1c35b825d86bca, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5725416364424737734, guid: e86b56eb18273432da1c35b825d86bca, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5725416364424737734, guid: e86b56eb18273432da1c35b825d86bca, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5725416364424737734, guid: e86b56eb18273432da1c35b825d86bca, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1290,8 +1331,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 1132125784}
   - {fileID: 1282197772}
-  - {fileID: 1625668236}
   - {fileID: 1816618603}
+  - {fileID: 1625668236}
   - {fileID: 820666523}
   - {fileID: 86887526189974621}
   - {fileID: 1603691376}
