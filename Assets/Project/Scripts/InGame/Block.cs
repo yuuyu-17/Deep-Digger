@@ -1,26 +1,16 @@
 using UnityEngine;
 
-public class Block
+public struct Block // ★クラスから構造体へ変更
 {
-    // ブロックの種類を定義
-    public enum BlockType
-    {
-        Dirt,  // 土
-        Rock,  // 岩
-        Gem,   // 宝石
-        Empty  // 掘られた後の空の状態
-    }
-
-    // このブロックのタイプ
+    public enum BlockType { Empty, Dirt, Rock, Gem }
     public BlockType type;
+    public int durability; // 耐久度
 
-    // ブロックの耐久度
-    public int health;
+    public static readonly Block OUT_OF_BOUNDS = new Block(BlockType.Empty, 0);
 
-    // コンストラクタ（新しいブロックを作成する際の初期設定）
-    public Block(BlockType type, int health)
+    public Block(BlockType type, int durability)
     {
         this.type = type;
-        this.health = health;
+        this.durability = durability;
     }
 }

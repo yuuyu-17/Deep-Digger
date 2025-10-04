@@ -54,6 +54,17 @@ public class Drill : MonoBehaviour
 
                 // どのブロックでも共通の破壊処理
                 Vector3Int gridPos = Vector3Int.RoundToInt(hit.collider.transform.position);
+
+                // 1. GridManagerからブロックのデータ（耐久度情報）を取得
+                Block blockToDestroy = GridManager.instance.GetBlock(gridPos.x, gridPos.y, gridPos.z);
+
+                // 2. 耐久度が9999以上（破壊不可能な壁）かチェック
+                if (blockToDestroy.durability >= 9999)
+                {
+                    Debug.Log("この壁はフィールドの境界です。破壊できません！");
+                    return; // 破壊処理を中断してメソッドを終了
+                }
+
                 GridManager.instance.DestroyBlock(gridPos.x, gridPos.y, gridPos.z);
 
                 // 掘った後に化け物を動かす
