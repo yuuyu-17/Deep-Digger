@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0, g: 0, b: 0, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.05
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
-  m_SubtractiveShadowColor: {r: 0.2811944, g: 0.4782749, b: 0.8396226, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 0.10849059, g: 0.4210978, b: 1, a: 1}
+  m_SkyboxMaterial: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 2b1e9cfa2c9554b83927a233c8e26109, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -421,8 +421,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 1625668235}
-  renderDistance: 40
-  updateInterval: 0.1
+  renderDistance: 8
+  yRenderDistance: 8
+  updateInterval: 0.5
 --- !u!1 &769245484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,12 +1032,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseScale: 0.1
-  noiseThreshold: 0.5
+  noiseThreshold: 0.35
   startYLevel: -5
   safeZoneRadius: 2
-  width: 40
-  height: 40
-  depth: 40
+  width: 500
+  height: 500
+  depth: 500
   dirtPrefab: {fileID: 7529567615649144053, guid: b5e3ff201d0414160aa230cf309b86c9, type: 3}
   rockPrefab: {fileID: 3789084485011033179, guid: f31682ced70a64e19a4b2b29059d69b2, type: 3}
   gemPrefab: {fileID: 5709598356867486685, guid: 0b7e8bfccd4bc43d1b900b742dd613e9, type: 3}

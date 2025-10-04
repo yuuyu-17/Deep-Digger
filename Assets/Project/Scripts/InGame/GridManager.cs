@@ -7,9 +7,9 @@ public class GridManager : MonoBehaviour
 
     [Header("洞窟生成設定")]
     // ノイズのスケール: 小さいほど大きな空洞ができる
-    public float noiseScale = 0.08f;
+    public float noiseScale = 0.1f;
     // ブロック生成の閾値: この値を超えた時だけブロックを生成
-    public float noiseThreshold = 0.5f;
+    public float noiseThreshold = 0.3f;
     // 毎回異なる世界を作るためのノイズの開始座標
     private Vector3 noiseOffset;
 
@@ -68,6 +68,7 @@ public class GridManager : MonoBehaviour
     }
 
     // ランダムなワールドのデータを生成
+    // ランダムなワールドのデータを生成
     private void GenerateWorldData()
     {
         int maxGridYIndex = height - 1;
@@ -80,6 +81,23 @@ public class GridManager : MonoBehaviour
                 {
                     // 1. 物理座標Yを計算 (Y=0, -1, -2... または正の値)
                     int yPhysical = yIndex - maxGridYIndex;
+
+                    // ★★★ 境界の強制：外側の層を破壊不可能な岩にする ★★★
+                    // XZの境界 (x=0, x=width-1, z=0, z=depth-1)
+                    bool isXZBoundary = (x == 0 || x == width - 1 || z == 0 || z == depth - 1);
+                    // Yの境界 (yIndex=0=最も深い、yIndex=height-1=最も浅い)
+                    bool isYBoundary = (yIndex == 0 || yIndex == height - 1);
+                    
+                    // 地上（Y>0）を完全に岩で埋める
+                    bool isAboveGround = (yPhysical > 0); 
+
+                    if (isXZBoundary || isYBoundary || isAboveGround)
+                    {
+                        // 破壊不可能な岩で完全に壁を構成 (耐久度9999)
+                        gridData[x, yIndex, z] = new Block(Block.BlockType.Rock, 9999);
+                        continue; // 以下のノイズ生成ロジックをスキップ
+                    }
+                    // ★★★ 境界の強制 終了 ★★★
 
                     // 2. ノイズの計算
                     float xCoord = (x + noiseOffset.x) * noiseScale;
@@ -105,12 +123,10 @@ public class GridManager : MonoBehaviour
                     if (x >= playerStartX - safeZoneRadius && x <= playerStartX + safeZoneRadius &&
                         z >= playerStartZ - safeZoneRadius && z <= playerStartZ + safeZoneRadius)
                     {
-                        // プレイヤーの足場（startYLevel の1つ下）
                         if (yPhysical == startYLevel - 1)
                         {
                             forceSolidFloor = true;
                         }
-                        // プレイヤーが立つ空間とその上
                         else if (yPhysical >= startYLevel && yPhysical <= startYLevel + 2)
                         {
                             isPlayerSafeZone = true;
@@ -120,17 +136,14 @@ public class GridManager : MonoBehaviour
                     // 5. ブロックの割り当て
                     if (isPlayerSafeZone)
                     {
-                        // 強制空洞エリア
                         gridData[x, yIndex, z] = new Block(Block.BlockType.Empty, 0);
                     }
                     else if (forceSolidFloor)
                     {
-                        // 強制足場エリア (Dirtを生成)
                         gridData[x, yIndex, z] = new Block(Block.BlockType.Dirt, 3);
                     }
                     else if (shouldBeSolid)
                     {
-                        // ノイズが閾値を超えた場合、ブロックの種類を決定
                         float randomValue = Random.value;
                         if (randomValue < 0.8f)
                         {
@@ -147,7 +160,6 @@ public class GridManager : MonoBehaviour
                     }
                     else
                     {
-                        // ノイズが閾値未満 または 強制空洞の場合
                         gridData[x, yIndex, z] = new Block(Block.BlockType.Empty, 0);
                     }
                 }
@@ -158,8 +170,8 @@ public class GridManager : MonoBehaviour
     // 最初のブロック群を生成
     private void GenerateInitialBlocks(Vector3Int centerPhysicalPos)
     {
-        // 安全ゾーンより少し広く生成
-        int initialGenerateRadius = 40;
+        // 処理落ち対策のため、初期生成範囲を限定（safeZoneRadius + 5を推奨）
+        int initialGenerateRadius = safeZoneRadius + 5; 
 
         for (int x = centerPhysicalPos.x - initialGenerateRadius; x <= centerPhysicalPos.x + initialGenerateRadius; x++)
         {
@@ -169,15 +181,18 @@ public class GridManager : MonoBehaviour
                 {
                     Vector3Int gridPos = GetGridIndexFromPhysicalPos(new Vector3Int(x, yPhysical, z));
 
-                    // 境界チェックと、データがEmptyではないかチェック
                     if (gridPos.x >= 0 && gridPos.x < width &&
                         gridPos.y >= 0 && gridPos.y < height &&
                         gridPos.z >= 0 && gridPos.z < depth)
                     {
-                         // データが Empty でない場合にのみ物理オブジェクトを生成
                         if (gridData[gridPos.x, gridPos.y, gridPos.z].type != Block.BlockType.Empty)
                         {
-                             CreateBlockGameObject(new Vector3Int(x, yPhysical, z));
+                             // 重複生成を防ぐために辞書チェック
+                             Vector3Int physicalPos = new Vector3Int(x, yPhysical, z);
+                             if (!activeBlockObjects.ContainsKey(physicalPos))
+                             {
+                                CreateBlockGameObject(physicalPos);
+                             }
                         }
                     }
                 }
@@ -219,36 +234,34 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    // ★新規メソッド: 物理座標をグリッドインデックスに変換するヘルパー関数
+    // 物理座標をグリッドインデックスに変換するヘルパー関数
     private Vector3Int GetGridIndexFromPhysicalPos(Vector3Int physicalPos)
     {
         int maxGridYIndex = height - 1;
-
-        // Y物理座標 (0, -1, -2...) を Yインデックス (49, 48, 47...) に変換
-        // 例: physicalPos.y=0 -> yIndex=49
-        // 例: physicalPos.y=-49 -> yIndex=0
         int yIndex = physicalPos.y + maxGridYIndex;
 
         return new Vector3Int(physicalPos.x, yIndex, physicalPos.z);
     }
 
     // 外部からブロックデータを取得するメソッド (引数は物理座標)
+    // ★★★ 境界チェックロジックを削除し、純粋なデータアクセスにシンプル化 ★★★
     public Block GetBlock(int x, int y, int z)
     {
         Vector3Int gridPos = GetGridIndexFromPhysicalPos(new Vector3Int(x, y, z));
-
         int xIndex = gridPos.x;
         int yIndex = gridPos.y;
         int zIndex = gridPos.z;
 
+        // 単純な配列境界チェック
         if (xIndex >= 0 && xIndex < width && yIndex >= 0 && yIndex < height && zIndex >= 0 && zIndex < depth)
         {
             return gridData[xIndex, yIndex, zIndex];
         }
+
+        // データ配列の外側であれば、OUT_OF_BOUNDS（空）を返す
         return Block.OUT_OF_BOUNDS;
     }
 
-    // 外部からブロックを破壊するメソッド（引数は物理座標）
     public void DestroyBlock(int x, int y, int z)
     {
         Vector3Int gridPos = GetGridIndexFromPhysicalPos(new Vector3Int(x, y, z));
@@ -258,16 +271,19 @@ public class GridManager : MonoBehaviour
         int yIndex = gridPos.y;
         int zIndex = gridPos.z;
 
+        // 1. グリッドデータ（配列）の破壊
         if (xIndex >= 0 && xIndex < width && yIndex >= 0 && yIndex < height && zIndex >= 0 && zIndex < depth)
         {
             // グリッドのデータを「空」に設定
             gridData[xIndex, yIndex, zIndex].type = Block.BlockType.Empty;
         }
 
-        // ★★★ Dictionaryからオブジェクトを探して破壊 ★★★
+        // 2. ★★★ 物理オブジェクト（GameObject）の破壊 ★★★
+        // Dictionaryからオブジェクトを探して破壊
         if (activeBlockObjects.TryGetValue(physicalPos, out GameObject blockObject))
         {
-            Destroy(blockObject);
+            // Destroy(blockObject); // 処理落ち対策のため、非アクティブ化を試す場合はこちら
+            blockObject.SetActive(false); // ★★★ 処理落ち対策として非アクティブ化を使用 ★★★
             activeBlockObjects.Remove(physicalPos);
         }
     }
