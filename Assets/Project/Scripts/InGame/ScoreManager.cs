@@ -41,14 +41,6 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreUI();
     }
 
-    public int EndShiftAndGetScore()
-    {
-        int scoreToClear = score;
-        score = 0;
-        UpdateScoreUI();
-        return scoreToClear;
-    }
-
     private void UpdateScoreUI()
     {
         if (scoreText != null)
