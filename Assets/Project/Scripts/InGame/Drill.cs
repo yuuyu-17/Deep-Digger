@@ -7,6 +7,19 @@ public class Drill : MonoBehaviour
 
     public Monster monster;
 
+    private FuelManager fuelManager;
+
+    private void Start()
+    {
+        // FuelManagerの参照を取得 (同じプレイヤーオブジェクトにアタッチされている前提)
+        fuelManager = GetComponent<FuelManager>();
+        if (fuelManager == null)
+        {
+            Debug.LogError("FuelManagerが見つかりません。");
+            enabled = false;
+        }
+    }
+
     private void Update()
     {
         // マウスの左クリックを検知
@@ -18,9 +31,17 @@ public class Drill : MonoBehaviour
             // 画面の中央からRaycastを飛ばす
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDrillDistance))
             {
+                // 採掘時のFuel消費を最初に実行
+                if (fuelManager.currentFuel <= 0)
+                {
+                    Debug.Log("燃料が切れたため掘れません。");
+                    return;
+                }
+
                 // ヒットしたオブジェクトのタグを取得
                 string hitTag = hit.collider.tag;
-
+                float consumptionMultiplier = (hitTag == "Gem") ? 2.0f : 1.0f;
+                fuelManager.ConsumeFuelForMining(consumptionMultiplier);
                 if (hitTag == "CoreGem")
                 {
                     Debug.Log("ゲームクリア！コア・ジェムを見つけました。");
