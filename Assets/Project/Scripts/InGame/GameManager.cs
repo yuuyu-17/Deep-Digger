@@ -6,6 +6,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [Header("シーン設定")]
+    public string townSceneName = "TownScene"; // 例: "TownScene"
+    public string mineSceneName = "MineScene"; // 例: "MineScene"
+
     private void Awake()
     {
         if (instance == null)
@@ -18,14 +22,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void GoToMine()
     {
-        
+        Debug.Log("街から洞窟へ移動します。");
+        SceneManager.LoadScene(mineSceneName);
     }
-
-    private void Update()
+    
+    // ★★★ 洞窟から街へ帰還 ★★★
+    public void ReturnToTown()
     {
+        Debug.Log("洞窟から街へ帰還します。");
+        SceneManager.LoadScene(townSceneName);
         
+        // ★ヒント: 帰還時にスコア清算や次回への準備ロジックをここに追加できます★
     }
 
     public void LoadWinScene()
