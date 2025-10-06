@@ -73,6 +73,13 @@ public class Drill : MonoBehaviour
                 // ScoreManagerのインスタンスを通じてスコアを加算
                 ScoreManager.instance.AddScore(scoreToAdd);
 
+                // InGameUIManagerへの参照を取得または検索（最も簡単な方法）
+                InGameUIManager uiManager = FindObjectOfType<InGameUIManager>();
+                if (uiManager != null)
+                {
+                    uiManager.UpdateAllUI();
+                }
+
                 // どのブロックでも共通の破壊処理
                 Vector3Int gridPos = Vector3Int.RoundToInt(hit.collider.transform.position);
 

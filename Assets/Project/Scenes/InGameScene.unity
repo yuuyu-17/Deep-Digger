@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.10849059, g: 0.4210978, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -284,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56447c0b37d9543ecba5cd08dd903ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridManager: {fileID: 1625668235}
+  gridManager: {fileID: 811276749}
   renderDistance: 8
   yRenderDistance: 8
   updateInterval: 0.5
@@ -515,6 +515,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791704784}
   m_CullTransparentMesh: 1
+--- !u!1 &811276748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 811276750}
+  - component: {fileID: 811276749}
+  m_Layer: 0
+  m_Name: _GridManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &811276749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811276748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b732a568f0164e498dd41e8a2360552, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noiseScale: 0.1
+  noiseThreshold: 0.35
+  startYLevel: -5
+  safeZoneRadius: 2
+  width: 250
+  height: 250
+  depth: 250
+  dirtPrefab: {fileID: 7529567615649144053, guid: b5e3ff201d0414160aa230cf309b86c9, type: 3}
+  rockPrefab: {fileID: 3789084485011033179, guid: f31682ced70a64e19a4b2b29059d69b2, type: 3}
+  gemPrefab: {fileID: 5709598356867486685, guid: 0b7e8bfccd4bc43d1b900b742dd613e9, type: 3}
+--- !u!4 &811276750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 811276748}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &820666523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -691,6 +745,52 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893407770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &960924991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 960924993}
+  - component: {fileID: 960924992}
+  m_Layer: 0
+  m_Name: _InGameUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &960924992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960924991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3a08eeaa726b40bcab71721e22b3401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inGameScoreText: {fileID: 1786493231}
+  fuelPackCountText: {fileID: 791704786}
+--- !u!4 &960924993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 960924991}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -959,6 +1059,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1440358044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1440358045}
+  - component: {fileID: 1440358046}
+  m_Layer: 0
+  m_Name: _EscapePortalSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1440358045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440358044}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1440358046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440358044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8111045fc07a49208fdffffdc130f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portalPrefab: {fileID: 6609798494455253870, guid: 4936e663def96490a97c8e33e6f29933, type: 3}
+  spawnOffset: 2
 --- !u!1 &1603691372
 GameObject:
   m_ObjectHideFlags: 0
@@ -1073,7 +1219,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1625668236}
   - component: {fileID: 1625668237}
-  - component: {fileID: 1625668235}
   - component: {fileID: 1625668238}
   m_Layer: 0
   m_Name: _GameManager
@@ -1082,28 +1227,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1625668235
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625668234}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b732a568f0164e498dd41e8a2360552, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noiseScale: 0.1
-  noiseThreshold: 0.35
-  startYLevel: -5
-  safeZoneRadius: 2
-  width: 250
-  height: 250
-  depth: 250
-  dirtPrefab: {fileID: 7529567615649144053, guid: b5e3ff201d0414160aa230cf309b86c9, type: 3}
-  rockPrefab: {fileID: 3789084485011033179, guid: f31682ced70a64e19a4b2b29059d69b2, type: 3}
-  gemPrefab: {fileID: 5709598356867486685, guid: 0b7e8bfccd4bc43d1b900b742dd613e9, type: 3}
 --- !u!4 &1625668236
 Transform:
   m_ObjectHideFlags: 0
@@ -1131,6 +1254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 867269059a577404693570923d09ccda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  townSceneName: TownScene
+  mineSceneName: InGameScene
 --- !u!114 &1625668238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1144,7 +1269,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fuelPacks: 0
-  fuelPackText: {fileID: 791704786}
   itemCost: 100
 --- !u!1 &1786493229
 GameObject:
@@ -1311,7 +1435,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fed298b285aac4279b7505c5a0c7d4ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 1786493231}
 --- !u!4 &1816618603
 Transform:
   m_ObjectHideFlags: 0
@@ -1407,10 +1530,13 @@ SceneRoots:
   - {fileID: 1132125784}
   - {fileID: 1282197772}
   - {fileID: 1816618603}
-  - {fileID: 1625668236}
+  - {fileID: 811276750}
+  - {fileID: 1440358045}
+  - {fileID: 960924993}
   - {fileID: 820666523}
   - {fileID: 86887526189974621}
   - {fileID: 1603691376}
   - {fileID: 893407773}
+  - {fileID: 1625668236}
   - {fileID: 769245485}
   - {fileID: 1158392994}

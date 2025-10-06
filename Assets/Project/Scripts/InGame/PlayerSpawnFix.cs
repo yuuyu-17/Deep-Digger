@@ -25,9 +25,25 @@ public class PlayerSpawnFix : MonoBehaviour
         // Yは安全に立つことができる足場の上（startYLevel）に設定
         float startY = (float)gridManager.startYLevel;
 
+        // プレイヤーの最終的な初期位置を計算し、変数に定義
+        Vector3 finalSpawnPosition = new Vector3(centerX, startY, centerZ);
+
         // このスクリプトがアタッチされているオブジェクト（プレイヤー本体またはカメラ）を移動
         transform.position = new Vector3(centerX, startY, centerZ);
 
         Debug.Log($"プレイヤーを初期位置へ移動: X={centerX}, Y={startY}, Z={centerZ}");
+
+        // ----------------------------------------------------
+        // ★★★ ポータル生成をワープ完了後に指示 ★★★
+        // ----------------------------------------------------
+        if (EscapePortalSpawner.instance != null)
+        {
+            // ワープ後の確定した座標を使ってポータルを生成
+            EscapePortalSpawner.instance.SpawnPortal(finalSpawnPosition);
+        }
+        else
+        {
+            Debug.LogError("EscapePortalSpawnerが見つかりません。MineSceneにスポーナーを配置し忘れていませんか？");
+        }
     }
 }
