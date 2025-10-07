@@ -6,7 +6,10 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager instance;
 
     // 現在の燃料回復アイテムの数
-    [HideInInspector] public int fuelPacks = 0;
+    [Header("初期設定")]
+    public int startingFuelPacks = 2;
+
+    [HideInInspector] public int fuelPacks;
 
     [Header("アイテム設定")]
     public int itemCost = 100; // 街でアイテムを買うのに必要なジェムスコア
@@ -23,6 +26,9 @@ public class InventoryManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // ★★★ 修正箇所: ゲーム開始時の初期値を設定 ★★★
+        ResetInventory();
     }
 
     // アイテム数を増やす（街のショップで購入時）
@@ -48,5 +54,12 @@ public class InventoryManager : MonoBehaviour
         {
             textComponent.text = "燃料パック: x" + fuelPacks.ToString();
         }
+    }
+
+    // デモのリスタート用に作成したリセットメソッド
+    public void ResetInventory()
+    {
+        // ★★★ 修正箇所: インスペクターで設定した初期値を適用 ★★★
+        fuelPacks = startingFuelPacks;
     }
 }
