@@ -20,6 +20,9 @@ public class Monster : MonoBehaviour
 
     [Header("撃退設定")]
     public float largeFuelPenalty = 0.5f; // 撃退時に消費する燃料 (例: 50%)
+    private float checkRate = 0.1f; // 0.2秒ごとに判定
+    private float nextCheckTime;
+    private FlashlightController flashlightController;
 
     [Header("Sound")]
     public AudioClip chaseLoopClip; // 追跡中にループ再生する音（足音、唸り声など）
@@ -49,6 +52,12 @@ public class Monster : MonoBehaviour
         patrolDirection = GetRandomDirection();
 
         SetInitialSpawnPosition();
+
+        flashlightController = playerTransform.GetComponentInChildren<FlashlightController>();
+        if (flashlightController == null)
+        {
+            Debug.LogError("FlashlightControllerが見つかりません。撃退判定ができません。");
+        }
     }
 
     private void Update()
@@ -70,6 +79,12 @@ public class Monster : MonoBehaviour
             }
             // 追跡移動 (moveSpeed * chaseSpeedMultiplierを使用)
             MoveTowardsPlayer(moveSpeed * chaseSpeedMultiplier);
+
+            if (Time.time >= nextCheckTime)
+            {
+                CheckForLightRepel();
+                nextCheckTime = Time.time + checkRate;
+            }
         }
         else
         {
@@ -156,31 +171,6 @@ public class Monster : MonoBehaviour
     // ----------------------------------------------------
     private void OnTriggerEnter(Collider other)
     {
-        // 1. プレイヤーライトによる撃退判定
-        if (other.CompareTag("Flashlight"))
-        {
-            FlashlightController flashlight = other.GetComponentInParent<FlashlightController>();
-            if (flashlight != null && flashlight.IsLightOn())
-            {
-                // ★★★ 撃退ロジック: 燃料消費とテレポート ★★★
-                
-                // 燃料ペナルティを課す (1回だけ実行)
-                FuelManager.instance?.ConsumeFuelForMining(largeFuelPenalty);
-
-                // ★★★ 追記: 追跡SEの停止 ★★★
-                if (audioSource != null && audioSource.isPlaying)
-                {
-                    audioSource.Stop();
-                }
-                
-                // テレポートして追跡を終了
-                TeleportToSafeLocation(); 
-                isChasing = false;
-                
-                Debug.Log($"ライトの光でモンスターを撃退！燃料{largeFuelPenalty * 100}%消費し、テレポートさせました。");
-                return; // 撃退が成功したら、これ以上の処理（ゲームオーバー判定）は行わない
-            }
-        }
         
         // 2. プレイヤー接触によるゲームオーバー判定
         if (other.CompareTag("Player"))
@@ -288,5 +278,60 @@ public class Monster : MonoBehaviour
         transform.position = newPosition;
         
         Debug.Log($"モンスターを ({newPosition}) へテレポートさせました。");
+    }
+
+    private void CheckForLightRepel()
+    {
+        // 1. ライトがオフ、またはコントローラーが存在しない場合はスキップ
+        if (flashlightController == null || !flashlightController.IsLightOn())
+        {
+            return;
+        }
+
+        // 2. モンスターがプレイヤーのライトの有効射程距離内にいるか確認
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+        // FlashlightControllerの最大射程距離（MaxDistance）をここで使用すると正確です。
+        // 例として、ここでは15fを使用します。
+        if (distanceToPlayer > 15f) 
+        {
+            return;
+        }
+
+        // 3. レイキャストの準備
+        Vector3 lightOrigin = playerTransform.position; // プレイヤーの位置（またはカメラの位置）
+        Vector3 directionToMonster = (transform.position - lightOrigin).normalized;
+
+        RaycastHit hit;
+        
+        // 4. レイキャスト実行：プレイヤーからモンスターへレイを飛ばす
+        // ※ LayerMaskを設定して、ブロックのみを対象にすることも可能ですが、今回はシンプルに全てを対象とします。
+        if (Physics.Raycast(lightOrigin, directionToMonster, out hit, distanceToPlayer))
+        {
+            // 5. レイがヒットしたものがモンスター自身でない場合（間に壁がある場合）
+            // つまり、レイがモンスターに到達する前に壁に遮られた場合
+            if (hit.collider.gameObject != gameObject)
+            {
+                // 壁に遮られているため、撃退判定なし
+                return;
+            }
+        }
+
+        // 6. レイが遮られずにモンスターに到達した場合（撃退実行）
+        PerformRepel();
+    }
+
+    // ----------------------------------------------------
+    // ★★★ 撃退処理を独立したメソッドにする ★★★
+    // ----------------------------------------------------
+    private void PerformRepel()
+    {
+        // 撃退時の燃料消費
+        FuelManager.instance?.ConsumeFuelForMining(largeFuelPenalty);
+        
+        // テレポートして追跡を終了
+        TeleportToSafeLocation(); 
+        isChasing = false;
+        
+        Debug.Log("【レイキャスト成功】ライトの光でモンスターを撃退！テレポートさせました。");
     }
 }
