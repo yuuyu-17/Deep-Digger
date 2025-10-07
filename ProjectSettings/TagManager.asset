@@ -9,6 +9,7 @@ TagManager:
   - Dirt
   - Gem
   - Monster
+  - Flashlight
   layers:
   - Default
   - TransparentFX

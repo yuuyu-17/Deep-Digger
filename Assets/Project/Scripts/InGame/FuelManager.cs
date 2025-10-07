@@ -4,6 +4,8 @@ using TMPro;
 
 public class FuelManager : MonoBehaviour
 {
+    public static FuelManager instance;
+
     public float maxFuel = 1f;
     public float timeConsumptionRate = 1.0f / 120.0f; // ライト使用時の1秒あたりの消費量
     public float miningConsumptionPenalty = 0.01f; // 採掘1回あたりの消費量
@@ -19,6 +21,15 @@ public class FuelManager : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         currentFuel = maxFuel;
     }
 
@@ -53,11 +64,22 @@ public class FuelManager : MonoBehaviour
             {
                 flashlightController.ForceOff(); // ライトを強制オフ
             }
-            
+            // ★★★ 修正: GameManager.instanceを直接再確認する ★★★
+            if (gameManager == null)
+            {
+                // Start()で取得しきれていなかった場合のために、再度シングルトンから取得を試みる
+                gameManager = GameManager.instance;
+            }
             if (gameManager != null)
             {
+                Debug.Log("燃料切れ！ゲームオーバーをロードします。");
                 gameManager.LoadGameOverScene();
             }
+            else
+            {
+                Debug.LogError("FATAL ERROR: GameManagerが見つからないため、ゲームオーバーをロードできません。");
+            }
+
             // ゲームオーバー処理に入ったら、これ以上Updateを実行しない
             this.enabled = false;
             return;

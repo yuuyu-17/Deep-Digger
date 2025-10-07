@@ -95,10 +95,11 @@ public class Drill : MonoBehaviour
 
                 GridManager.instance.DestroyBlock(gridPos.x, gridPos.y, gridPos.z);
 
-                // 掘った後に化け物を動かす
+                // ★★★ モンスターの追跡をトリガー ★★★
+                Monster monster = FindObjectOfType<Monster>(); // シーン内のモンスターを探す
                 if (monster != null)
                 {
-                    monster.MoveTowardsPlayer();
+                    monster.StartChasing();
                 }
             }
         }
