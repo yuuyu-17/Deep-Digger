@@ -21,6 +21,10 @@ public class Monster : MonoBehaviour
     [Header("撃退設定")]
     public float largeFuelPenalty = 0.5f; // 撃退時に消費する燃料 (例: 50%)
 
+    [Header("Sound")]
+    public AudioClip chaseLoopClip; // 追跡中にループ再生する音（足音、唸り声など）
+    private AudioSource audioSource;
+
     // プレイヤーへの参照
     private Transform playerTransform;
     private Rigidbody rb;
@@ -35,6 +39,12 @@ public class Monster : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogError("MonsterにAudioSourceコンポーネントが見つかりません。");
+        }
 
         patrolDirection = GetRandomDirection();
 
@@ -51,6 +61,12 @@ public class Monster : MonoBehaviour
             {
                 isChasing = false;
                 Debug.Log("モンスターは追跡を諦め、徘徊に戻りました。");
+
+                // ★★★ 追記: 追跡SEの停止 ★★★
+                if (audioSource != null && audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
             }
             // 追跡移動 (moveSpeed * chaseSpeedMultiplierを使用)
             MoveTowardsPlayer(moveSpeed * chaseSpeedMultiplier);
@@ -125,6 +141,14 @@ public class Monster : MonoBehaviour
         isChasing = true;
         chaseTimer = chaseDuration;
         Debug.Log("採掘音！モンスターがプレイヤーを追跡開始！");
+
+        // ★★★ 追記: 追跡SEの再生を開始 ★★★
+        if (audioSource != null && chaseLoopClip != null && !audioSource.isPlaying)
+        {
+            audioSource.clip = chaseLoopClip;
+            audioSource.loop = true; // ループ再生を有効化
+            audioSource.Play();
+        }
     }
 
     // ----------------------------------------------------
@@ -142,6 +166,12 @@ public class Monster : MonoBehaviour
                 
                 // 燃料ペナルティを課す (1回だけ実行)
                 FuelManager.instance?.ConsumeFuelForMining(largeFuelPenalty);
+
+                // ★★★ 追記: 追跡SEの停止 ★★★
+                if (audioSource != null && audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
                 
                 // テレポートして追跡を終了
                 TeleportToSafeLocation(); 

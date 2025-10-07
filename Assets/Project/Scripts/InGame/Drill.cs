@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Drill : MonoBehaviour
 {
+    [Header("Sound Effects")]
+    public AudioClip dirtDrillClip;   // 土を掘る音
+    public AudioClip rockDrillClip;   // 岩を掘る音
+    public AudioClip gemDrillClip;    // ジェムを掘り当てた音
+    private AudioSource audioSource;  // 追加
+
    // Raycastの最大距離
     public float maxDrillDistance = 5f;
 
@@ -17,6 +23,12 @@ public class Drill : MonoBehaviour
         {
             Debug.LogError("FuelManagerが見つかりません。");
             enabled = false;
+        }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogError("DrillにAudioSourceコンポーネントが見つかりません。");
         }
     }
 
@@ -51,19 +63,20 @@ public class Drill : MonoBehaviour
 
                 // タグによって処理を分岐
                 int scoreToAdd = 0;
+                AudioClip clipToPlay = null;
                 switch (hitTag)
                 {
                     case "Dirt":
-                        Debug.Log("土のブロックを掘りました！");
                         scoreToAdd = 0;
+                        clipToPlay = dirtDrillClip; // 土の音を選択
                         break;
                     case "Rock":
-                        Debug.Log("岩のブロックを掘りました！");
                         scoreToAdd = 0;
+                        clipToPlay = rockDrillClip; // 岩の音を選択
                         break;
                     case "Gem":
-                        Debug.Log("宝石を掘り当てました！");
                         scoreToAdd = 100;
+                        clipToPlay = gemDrillClip; // ジェムの音を選択
                         break;
                     default:
                         Debug.Log("掘るべきブロックではありません。");
@@ -78,6 +91,12 @@ public class Drill : MonoBehaviour
                 if (uiManager != null)
                 {
                     uiManager.UpdateAllUI();
+                }
+
+                // ★★★ SEの再生 ★★★
+                if (audioSource != null && clipToPlay != null)
+                {
+                    audioSource.PlayOneShot(clipToPlay);
                 }
 
                 // どのブロックでも共通の破壊処理
