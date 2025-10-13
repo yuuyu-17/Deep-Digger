@@ -17,7 +17,6 @@ public class FuelManager : MonoBehaviour
 
     [Header("UI連携")]
     public TextMeshProUGUI fuelText;
-    public int scoreToFuelRate = 100; // 燃料補給に必要なジェムスコア
 
     private void Awake()
     {
@@ -124,26 +123,6 @@ public class FuelManager : MonoBehaviour
         {
             flashlightController.SetBlinkMode(false);
             flashlightController.TurnOn(); 
-        }
-    }
-
-    // ジェムを消費して燃料を満タンにするメソッド (FuelStationから呼び出す想定)
-    public bool BuyFullFuel()
-    {
-        // 既に満タンに近い場合は無駄遣いを防ぐ
-        if (currentFuel >= maxFuel * 0.99f) return true;
-
-        if (ScoreManager.instance.GetCurrentScore() >= scoreToFuelRate)
-        {
-            ScoreManager.instance.RemoveScore(scoreToFuelRate);
-            AddFuel(maxFuel);
-            Debug.Log("ジェムを消費して燃料を補給しました。");
-            return true;
-        }
-        else
-        {
-            Debug.Log("ジェムが足りません。");
-            return false;
         }
     }
 }
