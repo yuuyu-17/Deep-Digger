@@ -325,13 +325,19 @@ public class Monster : MonoBehaviour
     // ----------------------------------------------------
     private void PerformRepel()
     {
-        // 撃退時の燃料消費
+        // 撃退時の燃料消費（ジレンマの核）
         FuelManager.instance?.ConsumeFuelForMining(largeFuelPenalty);
         
         // テレポートして追跡を終了
         TeleportToSafeLocation(); 
         isChasing = false;
         
-        Debug.Log("【レイキャスト成功】ライトの光でモンスターを撃退！テレポートさせました。");
+        // ★★★ 追記: 追跡SEの停止も確実に実行されることを確認 ★★★
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        
+        Debug.Log("【レイキャスト成功】ライトの光でモンスターを撃退！");
     }
 }
