@@ -34,7 +34,7 @@ public class InGameUIManager : MonoBehaviour
 
             // 発表資料のコンセプトが伝わるように表示を調整
             inGameScoreText.text = $"クレジット: {credits}\n" +
-                                $"未換金ジェム: x{rareGems}";
+                                   $"未換金ジェム: x{rareGems}";
         }
         
         // ★★★ 燃料パック数の更新ロジックをここで実行 ★★★
