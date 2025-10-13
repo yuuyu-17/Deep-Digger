@@ -33,6 +33,17 @@ public class PlayerSpawnFix : MonoBehaviour
 
         Debug.Log($"プレイヤーを初期位置へ移動: X={centerX}, Y={startY}, Z={centerZ}");
 
+        Vector3 shopSpawnPosition = finalSpawnPosition + new Vector3(1.5f, 0, 0);
+        ShopManager shopManager = FindFirstObjectByType<ShopManager>(); // FindObjectOfTypeの非推奨警告を避けるため
+        if (shopManager != null)
+        {
+            shopManager.TeleportShop(shopSpawnPosition);
+        }
+        else
+        {
+            Debug.LogWarning("ShopManagerが見つかりません。ショップの初期配置をスキップしました。");
+        }
+
         // ----------------------------------------------------
         // ★★★ ポータル生成をワープ完了後に指示 ★★★
         // ----------------------------------------------------

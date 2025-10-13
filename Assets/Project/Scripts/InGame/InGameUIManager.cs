@@ -11,12 +11,12 @@ public class InGameUIManager : MonoBehaviour
     // 洞窟シーンのCanvasに配置した燃料パック数表示用のUI
     public TextMeshProUGUI fuelPackCountText;
 
-    private ScoreManager scoreManager;
+    private PlayerInventory inventory;
     private InventoryManager inventoryManager;
 
     private void Start()
     {
-        scoreManager = ScoreManager.instance;
+        inventory = PlayerInventory.instance;
         inventoryManager = InventoryManager.instance;
         
         // 最初の表示を更新
@@ -26,10 +26,15 @@ public class InGameUIManager : MonoBehaviour
     // スコア、燃料、アイテム数など、全てのUIを更新するメインメソッド
     public void UpdateAllUI()
     {
-        // ★スコア表示の更新★
-        if (inGameScoreText != null && scoreManager != null)
+        if (inGameScoreText != null && inventory != null)
         {
-            inGameScoreText.text = "稼ぎ: " + scoreManager.GetCurrentScore().ToString();
+            int commonGems = inventory.GetGemCount(PlayerInventory.GEM_ID_COMMON);
+            int rareGems = inventory.GetGemCount(PlayerInventory.GEM_ID_RARE);
+            int credits = inventory.GetCurrentCredit();
+
+            // 発表資料のコンセプトが伝わるように表示を調整
+            inGameScoreText.text = $"クレジット: {credits}\n" +
+                                $"未換金ジェム: x{rareGems}";
         }
         
         // ★★★ 燃料パック数の更新ロジックをここで実行 ★★★

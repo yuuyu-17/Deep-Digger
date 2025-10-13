@@ -42,7 +42,7 @@ public class FuelItemConsumer : MonoBehaviour
         {
             // 消費に成功したら燃料を満タンに回復
             fuelManager.AddFuel(fuelManager.maxFuel);
-            InGameUIManager uiManager = FindObjectOfType<InGameUIManager>();
+            InGameUIManager uiManager = FindFirstObjectByType<InGameUIManager>();
             if (uiManager != null)
             {
                 uiManager.UpdateFuelPackUI();
